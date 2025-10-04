@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trex.get - Access & Innovation</title>
+    <style>
+        /* --- General Variables and Reset --- */
+        :root {
+            --primary-color: #4CAF50; /* Green */
+            --secondary-color: #2196F3; /* Blue */
+            --google-blue: #4285F4; /* Google Blue */
+            --text-color: #f0f0f0;
+            --product-price-color: #FFD700; /* Gold/Yellow */
+            --telegram-color: #0088cc;
+            --light-bg: #2d3e50;
+            --card-color: #162447;
+            --software-bg: #3e5264; /* Background for the software selection area */
+            --quote-color: #ff9800; /* Orange for the quote box (now less used, replaced by gold/yellow) */
+        }
+
+        body {
+            background: linear-gradient(135deg, #1f4068 0%, var(--card-color) 100%); 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+            line-height: 1.6;
+            scroll-behavior: smooth; /* Smooth scrolling for redirects */
+        }
+
+        /* --- Global Layout --- */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px 0;
+        }
+
+        /* --- LOGIN/SIGN-UP PAGE STYLING (The First View) --- */
+        #login-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            background: linear-gradient(135deg, #1f4068 0%, #101c31 100%); 
+        }
+        
+        .login-container {
+            width: 90%;
+            max-width: 400px;
+            padding: 40px;
+            background-color: var(--card-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: var(--primary-color);
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+        }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #ccc; }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #555;
+            border-radius: 6px;
+            box-sizing: border-box;
+            background-color: #3a4a58;
+            color: var(--text-color);
+            font-size: 1em;
+        }
+
+        .action-button {
+            width: 100%;
+            padding: 15px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 10px;
+            display: block;
+            text-align: center;
+        }
+
+        .action-button:hover { background: #1976D2; transform: translateY(-2px); }
+        
+        /* New Google Button Style */
+        .google-btn {
+            background: var(--google-blue); 
+            margin-top: 20px; /* Separator space */
+        }
+        .google-btn:hover { 
+            background: #3367D6; 
+            transform: translateY(-2px); 
+        }
+        .google-btn span {
+            font-family: 'Arial', sans-serif;
+            font-weight: 900;
+            font-style: italic;
+            margin-right: 10px;
+            color: #FF5733; /* Simulate red 'G' */
+        }
+        
+        #error-message {
+            color: #FF5733; 
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            display: none; 
+        }
+        
+        #otp-info {
+            background-color: #2a3d4f;
+            color: var(--product-price-color);
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid var(--secondary-color);
+        }
+
+        .switch-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .switch-link button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 1em;
+            padding: 0;
+            font-weight: bold;
+        }
+        
+        /* Style for the Admin Passcode Toggle Link */
+        #admin-toggle-link {
+            text-align: right;
+            margin-top: 10px;
+        }
+        #admin-toggle-link button {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+
+        /* --- MAIN WEBSITE STYLING (Active after login) --- */
+        #main-website {
+            /* This section starts hidden until login is successful */
+            display: none; 
+        }
+        
+        section {
+            padding: 60px 0;
+            margin-bottom: 20px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- Header and Navigation --- */
+        header { background-color: rgba(0, 0, 0, 0.6); color: white; padding: 1.5rem 0; text-align: center; }
+        header h1 { margin: 0; font-size: 3.2em; color: white; display: flex; justify-content: center; align-items: center; text-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+        .logo-icon { font-size: 1.2em; color: var(--primary-color); margin-right: 10px; box-shadow: 0 0 15px var(--secondary-color); padding: 5px 8px; border-radius: 5px; font-family: monospace; font-weight: bold; }
+        header p { margin: 5px 0 1rem; font-size: 1.1em; color: #ccc; }
+        nav ul { list-style: none; padding: 0; margin: 1rem 0 0; display: flex; justify-content: center; }
+        nav ul li { margin: 0 20px; }
+        nav ul li a { color: white; text-decoration: none; font-weight: bold; padding: 5px 10px; transition: color 0.3s, border-bottom 0.3s; }
+        nav ul li a:hover { color: var(--secondary-color); border-bottom: 2px solid var(--secondary-color); }
+
+        h2 { text-align: center; color: var(--secondary-color); margin-bottom: 40px; font-size: 2em; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; }
+        
+        /* --- Service and Product Grids --- */
+        .grid-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 25px; margin-bottom: 40px; }
+        
+        /* Service Item - Keep hover for aesthetic, button for action */
+        .service-item { 
+            flex: 1 1 300px; 
+            padding: 30px; 
+            background: var(--light-bg); 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            transition: transform 0.3s, background-color 0.3s;
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .service-item:hover { 
+            transform: translateY(-8px); 
+            background-color: #3e5264; 
+        }
+        .service-item h3 { color: var(--primary-color); font-size: 1.8em; margin-top: 0; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 10px; }
+        
+        /* ------------------------------------- */
+        /* --- YELLOW GLOWING CONTACT CARD --- */
+        /* ------------------------------------- */
+        .quote-contact-box {
+            display: none; /* Controlled by JavaScript */
+            flex-direction: column;
+            width: 100%;
+            background-color: #2a3d4f;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 25px;
+            /* New Yellow/Gold Glow styles */
+            border: 3px solid var(--product-price-color); 
+            box-shadow: 0 0 18px var(--product-price-color), 0 0 7px rgba(255, 215, 0, 0.7);
+            text-align: center;
+        }
+        .quote-contact-box h4 {
+            color: var(--product-price-color);
+            margin-bottom: 10px;
+            font-size: 1.8em;
+            text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+        }
+        .quote-contact-box p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .phone-number {
+            /* Highlighted Phone Number */
+            font-size: 2.2em;
+            color: var(--product-price-color);
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 0 0 10px var(--product-price-color); /* Extra glow for the number */
+        }
+        /* ------------------------------------- */
+
+        /* Hidden Software Selection Area */
+        .software-list-selection {
+            display: none; /* Controlled by JavaScript */
+            flex-direction: column;
+            width: 100%;
+            background-color: var(--software-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .software-list-selection h4 {
+            color: var(--product-price-color);
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        .software-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            text-align: center;
+        }
+        .software-choice {
+            background-color: #2a3d4f;
+            padding: 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.2s;
+            border: 1px solid transparent;
+            font-weight: bold;
+        }
+        .software-choice:hover {
+            background-color: #1f4068;
+            border-color: var(--secondary-color);
+            transform: scale(1.03);
+        }
+        
+        /* Product Items - Adjusted for no images */
+        .product-item { 
+            flex: 1 1 220px; 
+            padding: 15px; 
+            text-align: center; 
+            background: #3a4a58; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4); 
+            transition: transform 0.3s; 
+            display: flex; /* Use flexbox for vertical alignment */
+            flex-direction: column;
+            justify-content: space-between; /* Push button to bottom */
+        }
+        .product-item h4 { color: white; margin: 10px 0 5px; font-size: 1.2em; }
+        .product-item p.price { font-size: 1.4em; font-weight: bold; color: var(--product-price-color); margin-bottom: 15px; }
+        .buy-btn { 
+            display: inline-block; 
+            background-color: var(--primary-color); 
+            color: white; 
+            padding: 10px 30px; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            margin-top: auto; /* Pushes button to bottom */ 
+            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+        .buy-btn:hover { 
+            background-color: #388E3C; 
+            transform: translateY(-1px);
+        }
+
+        /* Payment Details */
+        .payment-toggle-area { flex: 1 1 100%; display: flex; justify-content: center; }
+        /* Make sure the payment divs are targets for smooth scrolling/display */
+        .payment-toggle-area > div { display: none; flex-grow: 1; max-width: 800px; opacity: 0; transition: opacity 0.5s; }
+        
+        /* Show payment section when targeted */
+        #payment-details:target, #forex-payment:target, #service-quote-details:target { 
+            display: block; 
+            opacity: 1; 
+        } 
+        
+        .payment-card { background-color: #1a2a3a; padding: 25px; border-radius: 8px; border: 2px solid var(--secondary-color); margin-top: 25px; text-align: center; width: 100%; }
+        .telegram-btn { display: block; background-color: var(--telegram-color); color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.2em; margin-top: 20px; transition: background-color 0.3s, transform 0.2s; }
+        .telegram-btn:hover { background-color: #006699; transform: translateY(-2px); }
+
+        /* Contact Form */
+        #contact form { max-width: 700px; margin: auto; padding: 40px; background: var(--light-bg); border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        #contact input, #contact textarea, #contact select { width: 100%; padding: 12px; margin-bottom: 25px; border: 1px solid #555; border-radius: 4px; box-sizing: border-box; background-color: #3a4a58; color: white; }
+        
+        /* Footer */
+        footer { background: rgba(0, 0, 0, 0.6); color: white; text-align: center; padding: 1.5rem 0; margin-top: 0; font-size: 0.9em; }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-page">
+        <div class="login-container">
+            <h1 id="auth-title">Trex.get Login</h1>
+
+            <form id="loginForm" onsubmit="return validateLoginCredentials()">
+                <div class="form-group">
+                    <label for="login-username">Username or Email</label>
+                    <input type="text" id="login-username" name="username">
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" name="password">
+                </div>
+                
+                <div id="admin-code-group" class="form-group" style="display:none;">
+                    <label for="admin-code">🔒 Administrator Passcode</label>
+                    <input type="password" id="admin-code" name="admin_code">
+                </div>
+                
+                <div id="admin-toggle-link">
+                    <button type="button" onclick="toggleAdminCode()">I am an Administrator</button>
+                </div>
+                
+                <button type="submit" class="action-button">Continue to Verification</button>
+                
+                <!-- NEW GOOGLE BUTTON -->
+                <button type="button" class="action-button google-btn" onclick="simulateGoogleLogin()">
+                    <span style="font-size: 1.1em; margin-right: 10px;">G</span> Continue with Google
+                </button>
+                <!-- END NEW GOOGLE BUTTON -->
+                
+                <p id="error-message">Invalid credentials or Admin Code. Try "user" / "pass" or sign up.</p>
+
+                <div class="switch-link">
+                    <p style="margin: 0;">
+                        Don't have an account? 
+                        <button type="button" onclick="showSignUp()">Create New Account</button>
+                    </p>
+                </div>
+            </form>
+            
+            <form id="otpForm" style="display: none;" onsubmit="return validateOTP()">
+                <div id="otp-info">
+                    🔐 **OTP Verification**
+                    <p style="margin: 5px 0 0; font-size: 0.9em;">
+                        A 6-digit code has been simulated. Enter the code shown below:
+                    </p>
+                    <p id="simulated-code" style="font-size: 1.5em; font-weight: bold; color: white; margin: 10px 0;"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="otp-code">Enter 6-digit Code</label>
+                    <input type="number" id="otp-code" name="otp_code" maxlength="6" required>
+                </div>
+                
+                <button type="submit" class="action-button" style="background: var(--primary-color);">Verify & Log In</button>
+                <p id="otp-error-message" style="color: #FF5733; text-align: center; margin-top: 15px; font-weight: bold; display: none;">Invalid OTP.</p>
+                
+                <div class="switch-link">
+                    <button type="button" onclick="showLogin()">Go back to Login</button>
+                </div>
+            </form>
+
+            <form id="signUpForm" style="display: none;" onsubmit="return registerAccount()">
+                <div class="form-group">
+                    <label for="signup-email">Email Address</label>
+                    <input type="email" id="signup-email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-username">Create Username</label>
+                    <input type="text" id="signup-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="signup-password">Create Password</label>
+                    <input type="password" id="signup-password" name="password" required>
+                </div>
+                
+                <button type="submit" class="action-button" style="background: var(--primary-color);">Sign Up & Access</button>
+
+                <div class="switch-link">
+                    <p style="margin: 0;">
+                        Already have an account? 
+                        <button type="button" onclick="showLogin()">Log In</button>
+                    </p>
+                </div>
+            </form>
+
+            <p style="text-align: center; margin-top: 20px; font-size: 0.9em; color: #ccc;">
+                Secure access to premium services and products.
+            </p>
+        </div>
+    </div>
+
+    <div id="main-website">
+        <header>
+            <div class="container">
+                <h1>
+                    <span class="logo-icon">T</span>rex<span style="color: var(--primary-color); font-weight: 300;">.get</span>
+                </h1>
+                <p id="access-level-msg">Standard User Access</p>
+                <nav>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#services">Our Services</a></li>
+                        <li><a href="#products">Products</a></li> 
+                        <li><a href="#about">About Us</a></li> 
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <section id="home" class="container">
+                <h2 style="color: var(--product-price-color); border-bottom: none; padding-bottom: 0;">Maximize Your Potential</h2>
+                <p style="text-align: center; font-size: 1.5em; font-weight: bold; max-width: 800px; margin: 10px auto; color: white;">
+                    Unlock success in technology and finance with our expert solutions and premium resources.
+                </p>
+            </section>
+
+            <section id="tech-banner" class="container">
+                <h3>Get The Edge You Need.</h3>
+                <p>From seamless device performance to mastering professional software, we handle the complexity so you can focus on creativity and results.</p>
+            </section>
+
+            <section id="services" class="container">
+                <h2>Our Core Offerings</h2>
+                
+                <h3 class="section-subheading">Services & Support</h3>
+                <div class="grid-container">
+                    
+                    <!-- 1. Phone Fixing (Now with explicit button) -->
+                    <div class="service-item">
+                        <div>
+                            <h3>1. Professional Phone Fixing</h3>
+                            <p>Comprehensive repair and maintenance services for all major mobile devices (iOS and Android). We fix hardware issues, software glitches, and performance problems.</p>
+                            <p><strong>We Handle:</strong> Screen replacement, battery swaps, charging port repair, device backups, and system restoration.</p>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <button class="buy-btn" onclick="showContactForQuote('Professional Phone Fixing')">
+                                CONTACT FOR PRICE
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 2. Optimization & Setup (Now with explicit button) -->
+                    <div class="service-item">
+                        <div>
+                            <h3>2. Device Optimization & Software Setup</h3>
+                            <p>Clean up, speed up, and secure your PC or Mac. We ensure your licensed software is installed correctly and your system runs at peak efficiency.</p>
+                            <p><strong>We Include:</strong> Driver updates, virus removal, OS optimization, and setup/licensing for professional software tools.</p>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <button class="buy-btn" onclick="showContactForQuote('Device Optimization & Software Setup')">
+                                CONTACT FOR PRICE
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 3. Jailbreaking/Rooting (Now with explicit button) -->
+                    <div class="service-item">
+                        <div>
+                            <h3>3. Jailbreaking and Rooting Services</h3>
+                            <p>Unlock the full potential of your device. Safely perform advanced modifications to allow custom applications and complete system control.</p>
+                            <p><strong>Note:</strong> We ensure a clean, stable process for both iOS (Jailbreaking) and Android (Rooting) platforms.</p>
+                        </div>
+                        <div style="text-align: center; margin-top: 15px;">
+                            <button class="buy-btn" onclick="showContactForQuote('Jailbreaking and Rooting Services')">
+                                CONTACT FOR PRICE
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4. Premium PC Software Solutions (Clickable to reveal choices) -->
+                    <div class="service-item" onclick="toggleSoftwareSelection()">
+                        <h3>4. Premium PC Software Solutions</h3>
+                        <p>We provide industry-leading software licenses and installation services. Click to select your package and proceed to payment.</p>
+                        
+                        <div style="text-align: center; margin: 20px 0;">
+                            <p style="color: var(--product-price-color); font-size: 1.8em; font-weight: bold; margin-bottom: 10px;">
+                                Package Price: **399.99 ETB**
+                            </p>
+                            <span class="buy-btn" style="cursor: pointer;">SELECT SOFTWARE</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 5. PREMIUM FOREX COURSE -->
+                    <div class="service-item">
+                        <h3>5. Premium Forex Trading Course 📈</h3>
+                        <p>Master the foreign exchange market with our comprehensive course. Learn technical analysis, risk management, trade psychology, and proven strategies.</p>
+                        
+                        <div style="text-align: center; margin: 20px 0;">
+                            <p style="color: var(--product-price-color); font-size: 1.8em; font-weight: bold; margin-bottom: 10px;">
+                                Course Price: **999.99 ETB**
+                            </p>
+                            <a href="#forex-payment" class="buy-btn" style="background: var(--primary-color);">GET THE COURSE (999.99 ETB)</a>
+                        </div>
+                        <p>This includes lifetime access to video tutorials, study guides, and a private Telegram support group.</p>
+                    </div>
+
+                    <!-- SOFTWARE SELECTION LIST (Initially Hidden) -->
+                    <div id="software-selection-list" class="software-list-selection">
+                        <h4>Select Your 399.99 ETB Software Package</h4>
+                        <div class="software-grid">
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Adobe Photoshop')">Adobe Photoshop</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Adobe Premiere Pro')">Adobe Premiere Pro</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Adobe After Effects')">Adobe After Effects</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Adobe Illustrator')">Adobe Illustrator</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Complete Adobe Bundle')">**Complete Adobe Bundle**</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('DaVinci Resolve')">DaVinci Resolve (Studio)</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('VirtualDJ Pro')">VirtualDJ Pro</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Serato DJ Pro')">Serato DJ Pro</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Traktor Pro')">Traktor Pro</div>
+                            <div class="software-choice" onclick="selectSoftwareAndRedirect('Other Software')">Other (Specify in Message)</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- SERVICE QUOTE DETAILS (Shows when services 1-3 buttons are clicked) -->
+                <div class="payment-toggle-area">
+                    <div id="service-quote-details"> 
+                        <div class="quote-contact-box">
+                            <h4 id="quote-service-title">Contact for Quote</h4>
+                            <p>To receive an accurate quote for your service, please call us directly or reach out on Telegram.</p>
+                            
+                            <div class="phone-number">
+                                <!-- Phone number displayed in the glowing yellow style -->
+                                <a href="tel:+251920705567" style="color: inherit; text-decoration: none;">+2519 2070 5567</a>
+                            </div>
+                            
+                            <p style="font-weight: bold; margin-top: 0;">CONTACT FOR PRICE</p>
+
+                            <a href="https://t.me/+iSf2t36L_C0yMzU0" target="_blank" class="telegram-btn" style="background-color: var(--product-price-color); color: #162447;">
+                                **Chat on Telegram Now**
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAYMENT DETAILS SECTION (Dynamic for Software) -->
+                <div class="payment-toggle-area">
+                    <div id="payment-details"> 
+                        <div class="payment-card">
+                            <h4 id="payment-title" style="color: var(--product-price-color);">Complete Your **399.99 ETB** Purchase</h4>
+                            <p style="color: white; font-size: 1.1em; margin-bottom: 15px;">**STEP 1: Choose a method and transfer the exact amount.**</p>
+                            
+                            <div class="payment-option" style="background-color: #3a4a58; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 5px solid var(--primary-color); text-align: left;">
+                                <p><strong>Method 1: Tele Birr (Mobile Transfer)</strong></p>
+                                <p>Account Number (Phone): <span style="font-size: 1.3em; color: var(--product-price-color); font-weight: bold;">0920705567</span></p>
+                            </div>
+
+                            <div class="payment-option" style="background-color: #3a4a58; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 5px solid var(--primary-color); text-align: left;">
+                                <p><strong>Method 2: Bank of Abyssinia (BoA)</strong></p>
+                                <p>Account Number: <span style="font-size: 1.3em; color: var(--product-price-color); font-weight: bold;">230049351</span></p>
+                            </div>
+                            
+                            <p style="color: var(--primary-color); font-weight: bold; font-size: 1.2em; margin-top: 25px;">
+                                **STEP 2: Send Your Payment Screenshot**
+                            </p>
+                            <p id="payment-instruction" style="margin-bottom: 20px;">
+                                Send your receipt to us on Telegram for immediate access and installation help for your selected software package.
+                            </p>
+
+                            <a href="https://t.me/+iSf2t36L_C0yMzU0" target="_blank" class="telegram-btn">
+                                <span style="font-weight: normal;">Send Screenshot on</span> **Telegram**
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- FOREX COURSE Payment Details (999.99 ETB) -->
+                <div class="payment-toggle-area">
+                    <div id="forex-payment"> 
+                        <div class="payment-card" style="border: 2px solid var(--primary-color);">
+                            <h4 style="color: var(--primary-color);">Complete Your **999.99 ETB** Forex Course Purchase</h4>
+                            <p style="color: white; font-size: 1.1em; margin-bottom: 15px;">**STEP 1: Choose a method and transfer the exact amount.**</p>
+                            
+                            <div class="payment-option" style="background-color: #3a4a58; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 5px solid var(--primary-color); text-align: left;">
+                                <p><strong>Method 1: Tele Birr (Mobile Transfer)</strong></p>
+                                <p>Account Number (Phone): <span style="font-size: 1.3em; color: var(--product-price-color); font-weight: bold;">0920705567</span></p>
+                            </div>
+
+                            <div class="payment-option" style="background-color: #3a4a58; padding: 15px; margin: 15px 0; border-radius: 5px; border-left: 5px solid var(--primary-color); text-align: left;">
+                                <p><strong>Method 2: Bank of Abyssinia (BoA)</strong></p>
+                                <p>Account Number: <span style="font-size: 1.3em; color: var(--product-price-color); font-weight: bold;">230049351</span></p>
+                            </div>
+                            
+                            <p style="color: var(--primary-color); font-weight: bold; font-size: 1.2em; margin-top: 25px;">
+                                **STEP 2: Send Your Payment Screenshot**
+                            </p>
+                            <p style="margin-bottom: 20px;">
+                                Click the button below to send your receipt directly to us on Telegram for immediate access to the course materials.
+                            </p>
+
+                            <a href="https://t.me/+iSf2t36L_C0yMzU0" target="_blank" class="telegram-btn" style="background-color: var(--primary-color);">
+                                <span style="font-weight: normal;">Send Screenshot on</span> **Telegram**
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr style="border-color: #555; margin: 40px 0;">
+
+                <h3 class="section-subheading" id="products">Featured Products for Sale</h3>
+                <div class="grid-container">
+
+                    <div class="product-item">
+                        <h4>Pro Trading Bot License</h4>
+                        <p class="price">**499.00 ETB**</p>
+                        <a href="#contact" class="buy-btn" style="padding: 8px 20px;">Inquire Now</a>
+                    </div>
+
+                    <div class="product-item">
+                        <h4>High-Speed SSD (1TB)</h4>
+                        <p class="price">**79.99 ETB**</p>
+                        <a href="#contact" class="buy-btn" style="padding: 8px 20px;">Buy Now</a>
+                    </div>
+
+                    <div class="product-item">
+                        <h4>Lifetime Adobe Bundle Key</h4>
+                        <p class="price">**199.00 ETB**</p>
+                        <a href="#contact" class="buy-btn" style="padding: 8px 20px;">Inquire Now</a>
+                    </div>
+
+                    <div class="product-item">
+                        <h4>Premium DJ Headset</h4>
+                        <p class="price">**120.00 ETB**</p>
+                        <a href="#contact" class="buy-btn" style="padding: 8px 20px;">Buy Now</a>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="about" class="container">
+                <h2>About Trex.get</h2>
+                <p style="font-size: 1.1em;">
+                    **Trex.get** is an Addis Ababa-based technology service provider focused on delivering high-quality, reliable, and performance-driven solutions. Our team consists of specialized technicians dedicated to optimizing your devices and streamlining your digital workflow. We believe in providing transparent, professional service to ensure every client achieves their technological and creative potential.
+                </p>
+            </section>
+
+            <section id="contact" class="container">
+                <h2>Get In Touch</h2>
+                <p style="text-align: center;">Ready to scale your skills or fix your tech? Contact us today!</p>
+                <form action="#" method="POST">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+
+                    <label for="email_contact">Email:</label>
+                    <input type="email" id="email_contact" name="email" required>
+
+                    <label for="service_interest">I'm interested in:</label>
+                    <select id="service_interest" name="service_interest">
+                        <option value="forex">Premium Forex Course (999.99 ETB)</option>
+                        <option value="phone_fix">Phone Fixing Service</option>
+                        <option value="optimization">Device Optimization / Software Setup</option>
+                        <option value="jailbreak">Jailbreaking / Rooting Service</option>
+                        <option value="product_inquiry">Product Inquiry (e.g. SSD, Headset)</option>
+                        <option value="general">General Inquiry</option>
+                    </select>
+
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" rows="6" required></textarea>
+
+                    <button type="submit" class="action-button">Send Message</button>
+                </form>
+                <p style="text-align: center; margin-top: 20px;">You can also reach us directly at: **<a href="mailto:baskingarmor@gmail.com" style="color: var(--primary-color); text-decoration: none;">baskingarmor@gmail.com</a>**</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Trex.get. All Rights Reserved. | Email: baskingarmor@gmail.com</p>
+        </footer>
+    </div>
+    
+    <script>
+        // --- GLOBAL VARIABLES & CONFIGURATION ---
+        const ADMIN_CODE = "King1501@"; 
+        let simulatedOTP = null; 
+        let currentAccessLevel = 'Standard User Access'; 
+        const SOFTWARE_PRICE = "399.99 ETB";
+        // Defined here for reference, but hardcoded in HTML for display
+        const CONTACT_NUMBER = "+2519 2070 5567"; 
+
+        // --- ACCOUNT MANAGEMENT FUNCTIONS ---
+        
+        const DEFAULT_ACCOUNTS = [{ username: 'user', password: 'pass', email: 'default@user.com' }];
+
+        function getAccounts() {
+            const savedAccounts = localStorage.getItem('userAccounts');
+            if (savedAccounts) {
+                try {
+                    const parsedAccounts = JSON.parse(savedAccounts);
+                    const allAccounts = [...DEFAULT_ACCOUNTS.filter(
+                        def => !parsedAccounts.some(saved => saved.username === def.username)
+                    ), ...parsedAccounts];
+                    return allAccounts;
+                } catch (e) {
+                    console.error("Error parsing user accounts from localStorage:", e);
+                    return DEFAULT_ACCOUNTS;
+                }
+            }
+            return DEFAULT_ACCOUNTS;
+        }
+
+        function saveAccount(newAccount) {
+            let accounts = getAccounts().filter(acc => acc.username !== 'user');
+            accounts.push(newAccount);
+            localStorage.setItem('userAccounts', JSON.stringify(accounts));
+        }
+
+        // --- FORM TOGGLE FUNCTIONS ---
+
+        function showSignUp() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('otpForm').style.display = 'none';
+            document.getElementById('signUpForm').style.display = 'block';
+            document.getElementById('auth-title').textContent = 'Trex.get Sign Up';
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function showLogin() {
+            document.getElementById('signUpForm').style.display = 'none';
+            document.getElementById('otpForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('auth-title').textContent = 'Trex.get Login';
+            document.getElementById('error-message').style.display = 'none';
+            document.getElementById('otp-error-message').style.display = 'none';
+            
+            document.getElementById('login-username').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('admin-code').value = '';
+            document.getElementById('otp-code').value = '';
+            
+            document.getElementById('admin-code-group').style.display = 'none';
+            document.querySelector('#admin-toggle-link button').textContent = 'I am an Administrator';
+        }
+        
+        function toggleAdminCode() {
+            var adminGroup = document.getElementById('admin-code-group');
+            var toggleButton = document.querySelector('#admin-toggle-link button');
+            
+            if (adminGroup.style.display === 'none') {
+                adminGroup.style.display = 'block';
+                toggleButton.textContent = 'Hide Admin Passcode';
+            } else {
+                adminGroup.style.display = 'none';
+                toggleButton.textContent = 'I am an Administrator';
+                document.getElementById('admin-code').value = ''; 
+            }
+        }
+
+        // --- AUTHENTICATION FUNCTIONS ---
+        function validateLoginCredentials() {
+            var username = document.getElementById('login-username').value;
+            var password = document.getElementById('login-password').value;
+            var adminCode = document.getElementById('admin-code').value;
+            var errorMessage = document.getElementById('error-message');
+            let accounts = getAccounts();
+
+            errorMessage.style.display = 'none';
+
+            if (adminCode === ADMIN_CODE && adminCode !== "") {
+                currentAccessLevel = 'Administrator Access (Full Site)';
+                grantAccess(currentAccessLevel); 
+                return false; 
+            } 
+            
+            const matchedAccount = accounts.find(account => 
+                (account.username === username || account.email === username) && account.password === password
+            );
+
+            if (matchedAccount) {
+                currentAccessLevel = 'Standard User Access';
+                requestOTP(); 
+                return false;
+            } 
+            
+            else {
+                errorMessage.textContent = 'Invalid credentials or Admin Code. Try "user" / "pass" or sign up.';
+                errorMessage.style.display = 'block';
+                return false;
+            }
+        }
+        
+        // --- NEW GOOGLE LOGIN SIMULATION ---
+        function simulateGoogleLogin() {
+            console.log("Simulating Google OAuth login flow. Granting immediate access.");
+            // In a real app, this would redirect to Google's sign-in page.
+            currentAccessLevel = 'Google Authenticated User Access';
+            // Use a custom UI message instead of alert
+            showCustomMessage("Success!", "You have successfully signed in using Google (Simulated).", 'success');
+            grantAccess(currentAccessLevel);
+            return false;
+        }
+        // --- END GOOGLE LOGIN SIMULATION ---
+        
+        function requestOTP() {
+            simulatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+            
+            document.getElementById('simulated-code').textContent = simulatedOTP;
+            document.getElementById('auth-title').textContent = 'Enter Verification Code';
+            
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('otpForm').style.display = 'block';
+        }
+
+        function validateOTP() {
+            var enteredOTP = document.getElementById('otp-code').value;
+            var otpErrorMessage = document.getElementById('otp-error-message');
+            
+            otpErrorMessage.style.display = 'none';
+
+            if (enteredOTP === simulatedOTP) {
+                grantAccess(currentAccessLevel);
+            } else {
+                otpErrorMessage.textContent = 'Invalid OTP. Please try the code shown above.';
+                otpErrorMessage.style.display = 'block';
+            }
+            return false;
+        }
+
+        function registerAccount() {
+            var email = document.getElementById('signup-email').value;
+            var username = document.getElementById('signup-username').value;
+            var password = document.getElementById('signup-password').value;
+
+            if (email && username && password) {
+                const newAccount = { username, password, email };
+                saveAccount(newAccount);
+                showCustomMessage("Welcome!", "Account created for " + username + "! Accessing the main site.", 'success');
+                grantAccess('New User Access');
+            } else {
+                showCustomMessage("Error", "Please fill out all fields.", 'error');
+            }
+            return false;
+        }
+
+        function grantAccess(level) {
+            var loginPage = document.getElementById('login-page');
+            var mainWebsite = document.getElementById('main-website');
+            
+            document.getElementById('access-level-msg').textContent = level;
+
+            loginPage.style.display = 'none';      
+            mainWebsite.style.display = 'block';    
+            
+            document.body.style.background = 'linear-gradient(135deg, #1f4068 0%, #162447 100%)'; 
+        }
+        
+        // --- SERVICE CONTACT LOGIC ---
+        function showContactForQuote(serviceName) {
+            const quoteSection = document.getElementById('service-quote-details');
+            const titleElement = document.getElementById('quote-service-title');
+            
+            // 1. Update the content dynamically
+            titleElement.innerHTML = `Contact for Quote: **${serviceName}**`;
+            
+            // 2. We use a temporary hash to force visibility and scrolling
+            window.location.hash = 'service-quote-details';
+        }
+
+        // --- SOFTWARE SELECTION LOGIC ---
+
+        function toggleSoftwareSelection() {
+            const list = document.getElementById('software-selection-list');
+            if (list.style.display === 'flex') {
+                list.style.display = 'none';
+            } else {
+                list.style.display = 'flex';
+                // Hide quote box if active by resetting hash
+                window.location.hash = 'services'; 
+                // Scroll to the list when it appears
+                list.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function selectSoftwareAndRedirect(softwareName) {
+            const paymentTitle = document.getElementById('payment-title');
+            const paymentInstruction = document.getElementById('payment-instruction');
+            
+            // 1. Update Payment Card Content
+            paymentTitle.innerHTML = `Complete Your **${SOFTWARE_PRICE}** Purchase: **${softwareName}**`;
+            paymentInstruction.innerHTML = `Send your receipt to us on Telegram for immediate access and installation help for **${softwareName}**.`;
+
+            // 2. Ensure the dynamic payment section is visible and scroll to it
+            // We use a temporary hash to force visibility and scrolling
+            window.location.hash = 'payment-details';
+            
+            // Hide the selection list after a choice is made
+            document.getElementById('software-selection-list').style.display = 'none';
+        }
+        
+        // --- Custom Message Box Implementation (Replaces alert()) ---
+        // Inject Message Box HTML/CSS into the body
+        document.body.insertAdjacentHTML('beforeend', `
+            <style>
+                #custom-message-box {
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: #1f4068;
+                    color: white;
+                    padding: 25px 35px;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+                    z-index: 1000;
+                    display: none;
+                    flex-direction: column;
+                    align-items: center;
+                    min-width: 300px;
+                    border: 2px solid var(--secondary-color);
+                }
+                #custom-message-box h5 {
+                    margin-top: 0;
+                    font-size: 1.5em;
+                    color: var(--product-price-color);
+                }
+                #custom-message-box p {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                #custom-message-box button {
+                    background: var(--primary-color);
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background-color 0.2s;
+                }
+                #custom-message-box button:hover {
+                    background: #388E3C;
+                }
+                #custom-message-box.error {
+                    border-color: #FF5733;
+                }
+            </style>
+            <div id="custom-message-box">
+                <h5 id="message-title"></h5>
+                <p id="message-content"></p>
+                <button onclick="document.getElementById('custom-message-box').style.display = 'none';">OK</button>
+            </div>
+        `);
+
+        function showCustomMessage(title, content, type = 'info') {
+            const box = document.getElementById('custom-message-box');
+            document.getElementById('message-title').textContent = title;
+            document.getElementById('message-content').textContent = content;
+            
+            box.classList.remove('error');
+            if (type === 'error') {
+                box.classList.add('error');
+                document.getElementById('message-title').style.color = '#FF5733';
+            } else {
+                document.getElementById('message-title').style.color = 'var(--product-price-color)';
+            }
+            
+            box.style.display = 'flex';
+        }
+        
+    </script>
+</body>
+</html>
